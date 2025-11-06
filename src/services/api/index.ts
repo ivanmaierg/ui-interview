@@ -1,4 +1,4 @@
 export * from "./httpClient";
-export * from "./users";
+export * from "./characters";
 
 

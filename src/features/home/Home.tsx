@@ -1,33 +1,103 @@
-import { useState } from "react";
-import reactLogo from "../../assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect, useState } from "react";
 import "./home.css";
+import { fetchCharacters, transformCharacter } from "../../services/api";
+import type { CharactersPage,Character } from "../../services/api";
+
+
+const useGetCharacter = ({params}:any) =>{
+  const [data, setData] = useState<CharactersPage>();
+  const [isLoading, setLoading] = useState(true); 
+
+  useEffect(()=>{
+      const getData = async () => {
+        const characters = await fetchCharacters(params);
+        const transformedCharacter = transformCharacter(characters);
+        setLoading(false)
+        setData(transformedCharacter)
+      } 
+
+      getData();
+
+  },[])
+
+  return {data,isLoading}
+}
+
+
+const CharacterItem = ({name,gender,films}:Character) => (
+  <li className='character-item'>
+    <span className="name">
+      {name}
+    </span>
+    <span className="gender">
+      {gender}
+    </span>
+    <span className="films">
+      {
+        films.map(el => 
+          <a href={el}/>
+        )
+      }
+    </span>
+  </li>
+)
+
+
+const ListCharacters = ({charactersPage}:{charactersPage:CharactersPage}) => {
+  return (
+    <ul className='character-list'>
+      {charactersPage.results.map(({name,gender,films}:Character) =>
+       <CharacterItem name={name} gender={gender} films={films} key={name}/>
+    )}    
+    </ul>
+  )
+}
+
+const Controls = () => {
+  <div>
+    <button>
+      Previous
+    </button>
+    <button>
+      Next
+    </button>
+  </div>
+}
+
+const SearchInput = ({handleSearch}:{handleSearch:Function}) => {
+  const [input,setInput] = useState('');
+  return(
+    <div>
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
+      <button onClick={() => handleSearch(input)}>
+        search
+      </button>
+    </div>
+    
+  )
+}
 
 const Home = () => {
-  const [count, setCount] = useState(0);
+  const [search, setSearch] = useState("");
+
+  const {data,isLoading} = useGetCharacter({search});
+  const handleSearch = (val:string) => setSearch(val);
+
+  if(isLoading){
+    return <>
+      Loading...
+    </>
+  }
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <SearchInput handleSearch={handleSearch} />
+        <ListCharacters charactersPage={data} />
+        <Controls />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((prev) => prev + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/features/home/Home.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
     </>
   );
 };
 
 export default Home;
-
-
