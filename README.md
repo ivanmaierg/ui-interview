@@ -31,3 +31,33 @@ pnpm install
 
 ### Notes
 - References to online sandboxes (e.g., StackBlitz) were removed in favor of local development using pnpm.
+
+
+## Goal
+Implement a search page for Star Wars characters using the Star Wars API.  
+How do you display the data associated with each character?
+
+👉 [https://swapi.py4e.com/](https://swapi.py4e.com/)
+
+---
+
+### User
+- Star Wars fan who wants to search for their favorite characters from the Star Wars universe  
+- Would primarily access the app from a mobile device  
+- Wants to mark (favorite) characters  
+
+---
+
+### Features
+- Pagination  
+- Search  
+
+API example:  
+[https://swapi.dev/api/people/1/](https://swapi.dev/api/people/1/)
+
+---
+
+### Favorite Feature
+Display:
+- Name  
+- `"gender": "male"`
